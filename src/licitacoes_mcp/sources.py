@@ -180,13 +180,24 @@ def envelope(data: Any, pagina: int, tamanho_pagina: int) -> dict[str, Any]:
     }
 
 
+def link_pncp(cnpj: str | None, ano: object, sequencial: object) -> str:
+    """URL pública de uma contratação no PNCP.
+
+    A rota do portal é ``/app/editais/{cnpj}/{ano}/{sequencial}``. O índice de
+    busca devolve ``item_url`` como ``/compras/...``, que responde 404, então a
+    URL é sempre reconstruída a partir dos campos em vez de copiada.
+    """
+    if cnpj and ano and sequencial:
+        return f"{PNCP}/app/editais/{cnpj}/{ano}/{sequencial}"
+    return PNCP
+
+
 def resumir_edital(item: dict[str, Any]) -> dict[str, Any]:
     """Versão enxuta de um resultado da busca textual do PNCP.
 
     O índice de busca devolve ~90 campos por documento; quase todos são ruído
     para triagem. Aqui ficam só os que decidem se vale abrir o edital.
     """
-    item_url = item.get("item_url") or ""
     return {
         "numero_controle_pncp": item.get("numero_controle_pncp"),
         "titulo": item.get("title"),
@@ -205,14 +216,19 @@ def resumir_edital(item: dict[str, Any]) -> dict[str, Any]:
         "recebimento_propostas_fim": item.get("data_fim_recebimento_propostas"),
         "ano": item.get("ano"),
         "sequencial": item.get("numero_sequencial"),
-        "link_pncp": f"{PNCP}{item_url}" if item_url else item.get("link_sistema_origem"),
+        "link_pncp": link_pncp(item.get("orgao_cnpj"), item.get("ano"), item.get("numero_sequencial")),
     }
 
 
 def resumir_contratacao(item: dict[str, Any]) -> dict[str, Any]:
-    """Versão enxuta de uma contratação, boa para triagem."""
+    """Versão enxuta de uma contratação, boa para triagem.
+
+    O endpoint de consulta devolve a unidade em ``unidadeOrgao``; em alguns
+    registros antigos o campo ``unidadeAdministrativa`` vem nulo, então os dois
+    são aceitos.
+    """
     orgao = item.get("orgaoEntidade") or {}
-    unidade = item.get("unidadeAdministrativa") or {}
+    unidade = item.get("unidadeOrgao") or item.get("unidadeAdministrativa") or {}
     return {
         "numero_controle_pncp": item.get("numeroControlePNCP"),
         "orgao": orgao.get("razaoSocial"),
@@ -226,7 +242,7 @@ def resumir_contratacao(item: dict[str, Any]) -> dict[str, Any]:
         "data_abertura_proposta": item.get("dataAberturaProposta"),
         "data_encerramento_proposta": item.get("dataEncerramentoProposta"),
         "data_publicacao": item.get("dataPublicacaoPncp"),
-        "link_pncp": item.get("linkSistemaOrigem"),
+        "link_pncp": link_pncp(orgao.get("cnpj"), item.get("anoCompra"), item.get("sequencialCompra")),
         "ano": item.get("anoCompra"),
         "sequencial": item.get("sequencialCompra"),
     }

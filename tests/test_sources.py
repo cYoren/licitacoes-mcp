@@ -52,6 +52,12 @@ def test_envelope_trata_204_e_lista_pura():
     assert lista["total"] == 2
 
 
+def test_link_pncp_usa_rota_do_portal():
+    # /compras/... responde 404; a rota real do PNCP é /app/editais/...
+    assert sources.link_pncp("123", 2026, 5) == "https://pncp.gov.br/app/editais/123/2026/5"
+    assert sources.link_pncp(None, 2026, 5) == sources.PNCP
+
+
 def test_resumir_edital_extrai_campos_de_triagem():
     r = sources.resumir_edital({
         "numero_controle_pncp": "18291377000102-1-000192/2026",
@@ -59,21 +65,26 @@ def test_resumir_edital_extrai_campos_de_triagem():
         "description": "Aquisição de equipamentos",
         "orgao_nome": "MUNICIPIO DE CARMO DO CAJURU",
         "orgao_cnpj": "18291377000102",
+        "ano": "2026",
+        "numero_sequencial": "192",
         "uf": "MG",
         "valor_total_estimado": 743520.22,
         "item_url": "/compras/18291377000102/2026/192",
     })
     assert r["uf"] == "MG"
     assert r["valor_total_estimado"] == 743520.22
-    assert r["link_pncp"] == "https://pncp.gov.br/compras/18291377000102/2026/192"
+    assert r["link_pncp"] == "https://pncp.gov.br/app/editais/18291377000102/2026/192"
 
 
 def test_resumir_contratacao_achata_orgao():
     r = sources.resumir_contratacao({
         "orgaoEntidade": {"razaoSocial": "PREFEITURA X", "cnpj": "1"},
-        "unidadeAdministrativa": {"ufSigla": "SP", "municipioNome": "Campinas"},
+        "unidadeOrgao": {"ufSigla": "SP", "municipioNome": "Campinas"},
         "objetoCompra": "Merenda",
+        "anoCompra": 2026,
+        "sequencialCompra": 9,
     })
     assert r["orgao"] == "PREFEITURA X"
     assert r["uf"] == "SP"
     assert r["objeto"] == "Merenda"
+    assert r["link_pncp"] == "https://pncp.gov.br/app/editais/1/2026/9"

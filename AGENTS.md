@@ -32,6 +32,12 @@ Um endpoint novo só entra depois de uma chamada real bem-sucedida registrada em
 
 - Ambas as fontes exigem `tamanhoPagina >= 10`.
 - O detalhe da contratação migrou de `/api/pncp/v1/...` para `/api/consulta/v1/...`.
+- A URL pública de uma contratação é `https://pncp.gov.br/app/editais/{cnpj}/{ano}/{sequencial}`.
+  O índice de busca devolve `item_url` como `/compras/...`, que responde 404. Nunca copie
+  esse campo: reconstrua a URL a partir de `orgao_cnpj`, `ano` e `numero_sequencial`
+  (use `sources.link_pncp`).
+- O endpoint de consulta devolve a unidade em `unidadeOrgao`; `unidadeAdministrativa`
+  vem nulo. Aceite os dois.
 - A busca textual (`/api/search/`) devolve ~90 campos por documento; sempre normalize.
 - A busca textual não é documentada no OpenAPI, mas é estável e é a que o próprio site usa.
 - Rate limit real: chamadas sequenciais rápidas podem falhar. Respeite o retry/backoff do cliente.
