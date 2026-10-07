@@ -1,0 +1,35 @@
+[project]
+name = "licitacoes-mcp"
+version = "0.1.0"
+description = "MCP server somente-leitura para licitações públicas brasileiras (PNCP + Compras.gov.br)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "MedHub", email = "contact@medhub.one" }]
+keywords = ["mcp", "licitacoes", "pncp", "compras-publicas", "brazil", "open-data"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Intended Audience :: Developers",
+]
+dependencies = ["mcp>=2.0", "httpx>=0.27"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+licitacoes-mcp = "licitacoes_mcp.server:main"
+
+[project.urls]
+Homepage = "https://github.com/cYoren/licitacoes-mcp"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/licitacoes_mcp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["live: testes que consultam as APIs públicas reais (requerem rede)"]
