@@ -1,5 +1,7 @@
 # licitacoes-mcp
 
+[![cYoren/licitacoes-mcp MCP server](https://glama.ai/mcp/servers/cYoren/licitacoes-mcp/badges/score.svg)](https://glama.ai/mcp/servers/cYoren/licitacoes-mcp)
+
 Servidor [MCP](https://modelcontextprotocol.io) somente-leitura para **licitações públicas brasileiras**. Conecta qualquer agente de IA (Claude, ChatGPT, Cursor, Hermes, agente próprio) às fontes oficiais de contratações públicas do Brasil, sem credencial e sem cadastro.
 
 Fontes cobertas:
