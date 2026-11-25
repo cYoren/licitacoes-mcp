@@ -121,3 +121,10 @@ Projeto independente, sem vínculo com o governo federal. Os dados são público
 ## Licença
 
 MIT. Veja [LICENSE](LICENSE).
+
+## Licença e nome
+
+MIT, veja [LICENSE](LICENSE). O nome, o logo e as listagens nas lojas não fazem parte da cessão: um
+fork publica com nome próprio.
+
+Contribuições seguem os termos de [CONTRIBUTING.md](CONTRIBUTING.md).
